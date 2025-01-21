@@ -1,15 +1,13 @@
----
-title: OAuth and SSO Integration with SvelteKit and Better Auth
-description: Template to integrate SSO with Better Auth using an OAuth provider like github or microsoft.
----
+# OAuth and SSO Integration with SvelteKit and Better Auth
+## Template to integrate SSO with Better Auth using an OAuth provider like github or microsoft.
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://www.better-auth.com/docs/installation).
 
-## Example: Hiding your entire app behind an OAuth provider
+### Example: Hiding your entire app behind an OAuth provider
 
 To secure your entire application with an OAuth login provider, refer to the following example. When done, your entire app will be protected behind your chosen OAuth provider.
 
-### Step 1: Set up auth
+#### Step 1: Set up auth
 
 For this example we will be using Github and Microsoft social providers. 
 
@@ -32,7 +30,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Step 2: Callback endpoint
+#### Step 2: Callback endpoint
 
 Better Auth needs to be able to handle the callback, so you need to create a server endpoint.
 
@@ -44,7 +42,7 @@ const handler = toSvelteKitHandler(auth);
 export { handler as GET, handler as POST }
 ```
 
-### Step 3: Create authentication hooks
+#### Step 3: Create authentication hooks
 
 The callback will then be handled by our server hooks.
 
@@ -94,7 +92,7 @@ export const handle = sequence(setSessionHook, checkAuthHook); // use sequence t
 
 When visiting your app, you should now be redirected to whichever auth provider that you configured. Logging in should redirect you back to your app.
 
-### Step 4: Display user data (optional)
+#### Step 4: Display user data (optional)
 
 If you want, you can display user data as well.
 
