@@ -25,7 +25,7 @@ const checkAuthHook: Handle = async ({
 		// redirect if no session is found
 		const res = await auth.api.signInSocial({
 			body: {
-				provider: 'github', // valid entries are "microsoft" and "github"
+				provider: 'microsoft', // valid entries are "microsoft" and "github"
 				callbackURL: '/'
 			}
 		});
