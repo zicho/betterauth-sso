@@ -34,11 +34,7 @@ const checkAuthHook: Handle = async ({
 	}
 
 	// set user data as you wish
-	event.locals.user = {
-		id: session.user.id,
-		name: session.user.name,
-		email: session.user.email
-	};
+	event.locals.user = session.user;
 
 	// resolve as usual
 	return await resolve(event);
@@ -52,3 +48,15 @@ export const handle = sequence(
 	setSessionHook,
 	checkAuthHook
 );
+
+// export const init: ServerInit = async () => {
+// 	const migrator = new Migrator({
+// 		db,
+// 		provider: new CustomMigrationProvider()
+// 	});
+
+// 	const { error } = await migrator.migrateToLatest();
+// 	if (error) {
+// 		console.error('Migration failed:', error);
+// 	}
+// };

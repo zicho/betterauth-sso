@@ -2,14 +2,19 @@ import {
 	PRIVATE_AZURE_AD_CLIENT_ID,
 	PRIVATE_AZURE_AD_CLIENT_SECRET,
 	PRIVATE_AZURE_AD_TENANT_ID,
+	PRIVATE_BETTER_AUTH_SECRET,
 	PRIVATE_GITHUB_CLIENT_ID,
 	PRIVATE_GITHUB_CLIENT_SECRET
 } from '$env/static/private';
 import { betterAuth } from 'better-auth';
-import Database from 'better-sqlite3';
+import { db } from './db/db';
 
 export const auth = betterAuth({
-	database: new Database('./sqlite.db'),
+	secret: PRIVATE_BETTER_AUTH_SECRET,
+	database: {
+		db,
+		type: 'postgres'
+	},
 	socialProviders: {
 		github: {
 			clientId: PRIVATE_GITHUB_CLIENT_ID,

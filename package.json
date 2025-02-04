@@ -36,7 +36,11 @@
 	},
 	"dependencies": {
 		"@types/better-sqlite3": "^7.6.12",
+		"@types/pg": "^8.11.10",
 		"better-auth": "^1.1.14",
-		"better-sqlite3": "^11.8.1"
+		"better-sqlite3": "^11.8.1",
+		"kysely": "^0.27.5",
+		"pg": "^8.13.1",
+		"uuid": "^11.0.5"
 	}
 }
