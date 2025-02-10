@@ -1,5 +1,5 @@
 import type { Migration, MigrationProvider } from 'kysely';
-import { migrations } from './migrations';
+import { migrations } from './migrate';
 
 export class CustomMigrationProvider
 	implements MigrationProvider

@@ -1,5 +1,5 @@
+import type { Generated } from 'kysely';
+
 export type EntityBase = {
-	id: string;
-	createdAt: Date;
-	updatedAt?: Date;
+	id: Generated<string>;
 };
