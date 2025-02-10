@@ -1,11 +1,14 @@
 import type {
 	DeleteResult,
 	Insertable,
-	InsertResult
+	InsertResult,
+	Updateable,
+	UpdateResult
 } from 'kysely';
 import { db } from '../db';
 import type { Database } from '../schema/schema';
 import type { EntityBase } from '../types/EntityBase';
+import { DbHelper, type DbResult } from '../DbResult';
 
 export abstract class BaseRepo<
 	TTableEntity extends EntityBase
@@ -16,42 +19,53 @@ export abstract class BaseRepo<
 		id
 	}: {
 		id: string;
-	}): Promise<TTableEntity | null> {
-		const result = await db
-			.selectFrom(this.tableKey as keyof Database)
-			.where('id', '=', id)
-			.selectAll()
-			.executeTakeFirst();
+	}): Promise<DbResult<TTableEntity | null>> {
+		try {
+			const result = await db
+				.selectFrom(this.tableKey as keyof Database)
+				.where('id', '=', id)
+				.selectAll()
+				.executeTakeFirst();
 
-		// If needed, cast to TEntity, depending on your DB definition:
-		return result as TTableEntity | null;
+			return DbHelper.success(result as TTableEntity);
+		} catch (error) {
+			return DbHelper.failed(error);
+		}
 	}
 
 	async getMany({
 		limit = 100
-	}: { limit?: number } = {}): Promise<TTableEntity[]> {
-		const result = await db
-			.selectFrom(this.tableKey as keyof Database)
-			.selectAll()
-			.limit(limit)
-			.execute();
+	}: { limit?: number } = {}): Promise<
+		DbResult<TTableEntity[]>
+	> {
+		try {
+			const result = await db
+				.selectFrom(this.tableKey as keyof Database)
+				.selectAll()
+				.limit(limit)
+				.execute();
 
-		// If needed, cast to TEntity, depending on your DB definition:
-		return result as TTableEntity[];
+			return DbHelper.success(result as TTableEntity[]);
+		} catch (error) {
+			return DbHelper.failed(error);
+		}
 	}
 
 	async delete({
 		ids
 	}: {
 		ids: string | string[];
-	}): Promise<DeleteResult[]> {
-		const result = await db
-			.deleteFrom(this.tableKey as keyof Database)
-			.where('id', 'in', ids)
-			.execute();
+	}): Promise<DbResult<DeleteResult[]>> {
+		try {
+			const result = await db
+				.deleteFrom(this.tableKey as keyof Database)
+				.where('id', 'in', ids)
+				.execute();
 
-		// If needed, cast to TEntity, depending on your DB definition:
-		return result;
+			return DbHelper.success(result);
+		} catch (error) {
+			return DbHelper.failed(error);
+		}
 	}
 
 	async insert({
@@ -60,13 +74,36 @@ export abstract class BaseRepo<
 		data:
 			| Insertable<TTableEntity>
 			| Insertable<TTableEntity>[];
-	}): Promise<InsertResult[]> {
-		const result = await db
-			.insertInto(this.tableKey as keyof Database)
-			.values(data)
-			.execute();
+	}): Promise<DbResult<InsertResult[]>> {
+		try {
+			const result = await db
+				.insertInto(this.tableKey as keyof Database)
+				.values(data)
+				.execute();
 
-		// If needed, cast to TEntity, depending on your DB definition:
-		return result;
+			return DbHelper.success(result);
+		} catch (error) {
+			return DbHelper.failed(error);
+		}
+	}
+
+	async update({
+		id,
+		data
+	}: {
+		id: string;
+		data: Updateable<TTableEntity>;
+	}): Promise<DbResult<UpdateResult[]>> {
+		try {
+			const result = await db
+				.updateTable(this.tableKey as keyof Database)
+				.set(data)
+				.where('id', '=', id)
+				.execute();
+
+			return DbHelper.success(result);
+		} catch (error) {
+			return DbHelper.failed(error);
+		}
 	}
 }

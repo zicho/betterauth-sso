@@ -1,20 +1,27 @@
-import { Migrator } from 'kysely';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import {
+	Migrator,
+	type Migration,
+	type MigrationProvider
+} from 'kysely';
+import { migrations } from './migrations/_index';
 import { db } from './db';
-import { TypeScriptFileMigrationProvider } from './provider';
 
-// Create __dirname equivalent in ES modules:
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export class CustomMigrationProvider
+	implements MigrationProvider
+{
+	async getMigrations(): Promise<
+		Record<string, Migration>
+	> {
+		return migrations;
+	}
+}
 
 export async function migrateToLatest() {
 	// custom migration provider to use with TS files since Kysely "FileMigrationprovider" did not work
+
 	const migrator = new Migrator({
 		db,
-		provider: new TypeScriptFileMigrationProvider(
-			path.join(__dirname, '..', 'db', 'migrations')
-		)
+		provider: new CustomMigrationProvider()
 	});
 
 	const { error, results } =

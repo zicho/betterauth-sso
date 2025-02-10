@@ -1,5 +1,10 @@
 import { auth } from '$lib/server/auth'; // path to your auth file
-import { redirect, type Handle } from '@sveltejs/kit';
+import { migrateToLatest } from '$lib/server/db/migrator';
+import {
+	redirect,
+	type Handle,
+	type ServerInit
+} from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
@@ -48,6 +53,10 @@ export const handle = sequence(
 	setSessionHook,
 	checkAuthHook
 );
+
+export const init: ServerInit = async () => {
+	await migrateToLatest();
+};
 
 // export const init: ServerInit = async () => {
 // 	const migrator = new Migrator({
