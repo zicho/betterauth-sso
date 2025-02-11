@@ -55,17 +55,6 @@ export const handle = sequence(
 );
 
 export const init: ServerInit = async () => {
+	console.log('running migrations');
 	await migrateToLatest();
 };
-
-// export const init: ServerInit = async () => {
-// 	const migrator = new Migrator({
-// 		db,
-// 		provider: new CustomMigrationProvider()
-// 	});
-
-// 	const { error } = await migrator.migrateToLatest();
-// 	if (error) {
-// 		console.error('Migration failed:', error);
-// 	}
-// };

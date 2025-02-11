@@ -2,7 +2,7 @@ import { sql } from 'kysely';
 import type { NamedMigration } from './_index';
 
 const migration: NamedMigration = {
-	name: '0000_users',
+	name: '0001_entities',
 	up: async (db) => {
 		await db.schema
 			.createTable('person')
