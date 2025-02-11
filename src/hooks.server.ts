@@ -26,21 +26,27 @@ const checkAuthHook: Handle = async ({
 		headers
 	});
 
-	if (!session) {
-		// redirect if no session is found
-		const res = await auth.api.signInSocial({
-			body: {
-				provider: 'microsoft', // valid entries are "microsoft" and "github"
-				callbackURL: '/'
-			}
-		});
+	const route = event.route;
 
-		redirect(302, res.url!);
+	if (!session) {
+		if (event.route.id === '/login') {
+			return await resolve(event);
+		}
+
+		redirect(302, '/login');
+
+		// redirect if no session is found
+		// const res = await auth.api.signInSocial({
+		// 	body: {
+		// 		provider: 'microsoft', // valid entries are "microsoft" and "github"
+		// 		callbackURL: '/'
+		// 	}
+		// });
+
+		// redirect(302, res.url!);
 	}
 
-	// set user data as you wish
-	event.locals.user = session.user;
-
+	event.locals.user = session!.user;
 	// resolve as usual
 	return await resolve(event);
 };
